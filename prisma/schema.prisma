@@ -29,3 +29,31 @@ model Perfil {
   // a parte de categorias e os botões
   @@map("tb_perfis")
 }
+
+model Categoria {
+  id        String  @id @default(uuid()) @db.Uuid
+  nome      String
+  urlImagem String  @map("url_imagem")
+  padrao    Boolean @default(true)
+
+  // nulo quando a categoria é padrão (não pertence a nenhum perfil)
+  perfilId String? @map("perfil_id") @db.Uuid
+  perfil   Perfil? @relation(fields: [perfilId], references: [id])
+
+  botoes Botao[]
+
+  @@map("tb_categorias")
+}
+
+model Botao {
+  id        String  @id @default(uuid()) @db.Uuid
+  nome      String
+  urlImagem String  @map("url_imagem")
+  urlAudio  String  @map("url_audio")
+  padrao    Boolean @default(true)
+
+  categoriaId String    @map("categoria_id") @db.Uuid
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+
+  @@map("tb_botoes")
+}

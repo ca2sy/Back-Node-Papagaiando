@@ -1,10 +1,10 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Usuario {
@@ -12,21 +12,24 @@ model Usuario {
   email            String    @unique
   senha            String
   nome             String
-  tokenRecuperacao String?
-  expiracaoToken   DateTime?
-  perfis           Perfil[]
+  tokenRecuperacao String?   @map("token_recuperacao")
+  expiracaoToken   DateTime? @map("expiracao_token")
+
+  perfis Perfil[]
 
   @@map("tb_usuarios")
 }
 
 model Perfil {
-  id        String    @id @default(uuid()) @db.Uuid
-  nome      String
-  urlFoto   String
-  usuarioId String?   @map("usuario_id") @db.Uuid
-  usuario   Usuario?  @relation(fields: [usuarioId], references: [id])
+  id      String @id @default(uuid()) @db.Uuid
+  nome    String
+  urlFoto String @map("url_foto")
 
-  // a parte de categorias e os botões
+  usuarioId String  @map("usuario_id") @db.Uuid
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
+  categorias Categoria[]
+
   @@map("tb_perfis")
 }
 

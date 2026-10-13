@@ -9,6 +9,10 @@ export const botaoCreateSchema = z.object({
   categoriaId: uuidSchema,
 });
 
+export const botaoPersonalizadoCreateSchema = botaoCreateSchema.extend({
+  perfilId: uuidSchema,
+});
+
 export const botaoUpdateSchema = z.object({
   nome: z.string().min(1).optional(),
   urlImagem: z.string().min(1).optional(),
@@ -16,4 +20,7 @@ export const botaoUpdateSchema = z.object({
 });
 
 export type BotaoCreateInput = z.infer<typeof botaoCreateSchema>;
+export type BotaoPersonalizadoCreateInput = z.infer<
+  typeof botaoPersonalizadoCreateSchema
+>;
 export type BotaoUpdateInput = z.infer<typeof botaoUpdateSchema>;

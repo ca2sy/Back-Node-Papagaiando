@@ -28,7 +28,10 @@ model Perfil {
   usuarioId String  @map("usuario_id") @db.Uuid
   usuario   Usuario @relation(fields: [usuarioId], references: [id])
 
-  categorias Categoria[]
+  categorias               Categoria[]
+  botoes                   Botao[]
+  personalizacoesCategoria PersonalizacaoCategoria[]
+  personalizacoesBotao     PersonalizacaoBotao[]
 
   @@map("tb_perfis")
 }
@@ -39,11 +42,11 @@ model Categoria {
   urlImagem String  @map("url_imagem")
   padrao    Boolean @default(true)
 
-  // nulo quando a categoria é padrão (não pertence a nenhum perfil)
   perfilId String? @map("perfil_id") @db.Uuid
   perfil   Perfil? @relation(fields: [perfilId], references: [id])
 
-  botoes Botao[]
+  botoes          Botao[]
+  personalizacoes PersonalizacaoCategoria[]
 
   @@map("tb_categorias")
 }
@@ -58,5 +61,41 @@ model Botao {
   categoriaId String    @map("categoria_id") @db.Uuid
   categoria   Categoria @relation(fields: [categoriaId], references: [id])
 
+  perfilId String? @map("perfil_id") @db.Uuid
+  perfil   Perfil? @relation(fields: [perfilId], references: [id])
+
+  personalizacoes PersonalizacaoBotao[]
+
   @@map("tb_botoes")
+}
+
+model PersonalizacaoCategoria {
+  id        String  @id @default(uuid()) @db.Uuid
+  nome      String?
+  urlImagem String? @map("url_imagem")
+
+  categoriaId String    @map("categoria_id") @db.Uuid
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+
+  perfilId String @map("perfil_id") @db.Uuid
+  perfil   Perfil @relation(fields: [perfilId], references: [id])
+
+  @@unique([categoriaId, perfilId])
+  @@map("tb_personalizacoes_categoria")
+}
+
+model PersonalizacaoBotao {
+  id        String  @id @default(uuid()) @db.Uuid
+  nome      String?
+  urlImagem String? @map("url_imagem")
+  urlAudio  String? @map("url_audio")
+
+  botaoId String @map("botao_id") @db.Uuid
+  botao   Botao  @relation(fields: [botaoId], references: [id])
+
+  perfilId String @map("perfil_id") @db.Uuid
+  perfil   Perfil @relation(fields: [perfilId], references: [id])
+
+  @@unique([botaoId, perfilId])
+  @@map("tb_personalizacoes_botao")
 }

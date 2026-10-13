@@ -201,3 +201,11 @@ export async function redefinirSenha(
     },
   });
 }
+
+export async function verificarSenha(
+  id: string,
+  senha: string,
+): Promise<boolean> {
+  const usuario = await buscarPorIdOuFalhar(id);
+  return bcrypt.compare(senha, usuario.senha);
+}
